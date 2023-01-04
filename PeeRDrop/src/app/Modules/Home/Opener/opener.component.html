@@ -1,0 +1,34 @@
+<div style="padding: 30px;">
+    <input nz-input placeholder="Basic usage" [(ngModel)]="magenetURL" />
+    <button nz-button nzType="primary" (click)="DownloadTorrent()">Download</button>
+    
+    <div style="padding: 10px 0px;">
+        <table class="statusTable">
+            <tr>
+                <td>bytes</td>
+                <td>{{downloadingStatus.bytes}}</td>
+            </tr>
+            <tr>
+                <td>downloaded</td>
+                <td>{{downloadingStatus.downloaded}}</td>
+            </tr>
+            <tr>
+                <td>downloadSpeed</td>
+                <td>{{downloadingStatus.downloadSpeed}}</td>
+            </tr>
+            <tr>
+                <td>progress</td>
+                <td>{{downloadingStatus.progress}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="padding: 30px;">
+    <input type="file" id="myfile" name="myfile" multiple (change)="CreateTorrent($event)">
+</div>
+
+<div style="padding: 30px;">
+    {{createdMagnetTorrentLink}}
+    <input nz-input placeholder="Basic usage" [(ngModel)]="createdMagnetTorrentLink" />
+</div>
