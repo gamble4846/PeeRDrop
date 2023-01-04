@@ -10,11 +10,11 @@
             </tr>
             <tr>
                 <td>downloaded</td>
-                <td>{{(downloadingStatus.downloaded / 100000).toFixed(2)}} MB</td>
+                <td>{{(downloadingStatus.downloaded / 1000000).toFixed(2)}} MB</td>
             </tr>
             <tr>
                 <td>downloadSpeed</td>
-                <td>{{(downloadingStatus.downloadSpeed / 100000).toFixed(2)}} MB/s</td>
+                <td>{{(downloadingStatus.downloadSpeed / 1000000).toFixed(2)}} MB/s</td>
             </tr>
             <tr>
                 <td>progress</td>
@@ -29,6 +29,5 @@
 </div>
 
 <div style="padding: 30px;">
-    {{createdMagnetTorrentLink}}
     <input nz-input placeholder="Basic usage" [(ngModel)]="createdMagnetTorrentLink" />
 </div>
