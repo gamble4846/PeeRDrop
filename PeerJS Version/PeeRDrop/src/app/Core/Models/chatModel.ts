@@ -1,4 +1,5 @@
 import { BehaviorSubject } from "rxjs";
+import { messageModel } from "./messageModel";
 
 export interface chatModel{
     name: string,
@@ -19,7 +20,7 @@ export interface chatModel{
 }
 
 export interface chatHistoryModel{
-    data:any,
+    data:messageModel,
     dateTime:Date,
     isSender: boolean,
 }

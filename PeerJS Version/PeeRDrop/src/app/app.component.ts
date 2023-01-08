@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { chatModel } from './Core/Models/chatModel';
+import { messageModel } from './Core/Models/messageModel';
 import { PeerJsService } from './Core/PeerJsService/peer-js.service';
 
 @Component({
@@ -40,11 +41,23 @@ export class AppComponent {
     });
 
     chatObj.OnData.subscribe((data:any) => {
+      let message:messageModel;
+      try{
+        message = JSON.parse(data);
+      }
+      catch(ex){
+        message = {
+          type:"Simple Message",
+          data: data.toString(),
+          sendingTime: null,
+        }
+      }
+       
       chatObj.chatHistory.push({
-        data: data,
+        data: message,
         dateTime: new Date(),
         isSender: true,
-      })
+      });
     })
 
     chatObj.OnDisconnected.subscribe((data:any) => {
@@ -61,9 +74,16 @@ export class AppComponent {
   }
 
   sendMessage(indexOfChat:number){
-    this.PeerJs.sendData(this.ListOfChats[indexOfChat], this.ListOfChats[indexOfChat].currentmessage);
-    this.ListOfChats[indexOfChat].chatHistory.push({
+    let message:messageModel = {
+      type: "simplemessage",
       data: this.ListOfChats[indexOfChat].currentmessage,
+      sendingTime: new Date(),
+    }
+
+    this.PeerJs.sendData(this.ListOfChats[indexOfChat], JSON.stringify(message));
+    
+    this.ListOfChats[indexOfChat].chatHistory.push({
+      data: message,
       dateTime: new Date(),
       isSender: false,
     })

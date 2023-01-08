@@ -13,12 +13,14 @@
     Connect To Someone :: <input type="text" [(ngModel)]="chat.connectTo"> <button (click)="ConnectToNew(i)">Connect</button>
   </div>
   <div class="borderOne paddingFive">
-    <ul>
-      <li *ngFor="let chatHis of chat.chatHistory.reverse()">
-        <span *ngIf="chatHis.isSender" style="color: red;">Peer : </span>
-        <span *ngIf="!chatHis.isSender" style="color: green;">Self : </span>
-        {{chatHis.data}} - {{chatHis.dateTime}}</li>
-    </ul>
+    <table class="messageTable">
+      <tr *ngFor="let chatHis of chat.chatHistory.reverse()" [ngClass]="chatHis.isSender ? 'backgroundRed' : 'backgroundGreen'">
+        <ng-container *ngIf="chatHis.data">
+          <td>{{chatHis.data.data}}</td>
+          <td>{{chatHis.data.sendingTime}}</td>
+        </ng-container>
+      </tr>
+    </table>
   </div>
   <div class="borderOne paddingFive">
     <input type="text" [(ngModel)]="chat.currentmessage"> <button (click)="sendMessage(i)">Send</button>
