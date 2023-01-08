@@ -27,7 +27,8 @@ export class PeerJsService {
       OnData: new BehaviorSubject<any>(null),
       chatHistory: [],
       currentmessage: "",
-      connectTo: ""
+      connectTo: "",
+      selectedFile: null
     };
 
     return chat;

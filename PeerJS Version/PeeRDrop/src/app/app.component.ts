@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonService } from './Core/CommonService/common.service';
 import { chatModel } from './Core/Models/chatModel';
 import { messageModel } from './Core/Models/messageModel';
 import { PeerJsService } from './Core/PeerJsService/peer-js.service';
@@ -11,9 +12,11 @@ import { PeerJsService } from './Core/PeerJsService/peer-js.service';
 export class AppComponent {
   title = 'PeeRDrop';
   ListOfChats:Array<chatModel> = [];
+  fileStatus:string = "";
 
   constructor(
-    private PeerJs:PeerJsService
+    private PeerJs:PeerJsService,
+    private _cs:CommonService
   ) { 
 
   }
@@ -91,5 +94,17 @@ export class AppComponent {
 
   ConnectToNew(indexOfChat:number){
     this.ListOfChats[indexOfChat] = this.PeerJs.ConnectToNew(this.ListOfChats[indexOfChat]);
+  }
+
+  sendFile(indexOfChat:number){
+    this.fileStatus = "Reading file";
+    this._cs.getchunkedFile(this.ListOfChats[indexOfChat].selectedFile).subscribe((response:any) => {
+      console.log(response);
+      this.fileStatus = "Reading Completed";
+    })
+  }
+
+  fileSelected(event:any, indexOfChat:number){
+    this.ListOfChats[indexOfChat].selectedFile = event.target.files[0];
   }
 }

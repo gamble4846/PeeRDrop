@@ -17,6 +17,7 @@ export interface chatModel{
     chatHistory: Array<chatHistoryModel>,
     currentmessage: string,
     connectTo: string,
+    selectedFile: any,
 }
 
 export interface chatHistoryModel{
