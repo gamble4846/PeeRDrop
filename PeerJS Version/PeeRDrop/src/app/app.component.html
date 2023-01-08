@@ -1,4 +1,25 @@
-<!-- NG-ZORRO -->
-<a href="https://github.com/NG-ZORRO/ng-zorro-antd" target="_blank" style="display: flex;align-items: center;justify-content: center;height: 100%;width: 100%;">
-  <img height="300" src="https://img.alicdn.com/tfs/TB1X.qJJgHqK1RjSZFgXXa7JXXa-89-131.svg">
-</a>
+<router-outlet></router-outlet>
+
+<button (click)="CreateNewChat()">New Chat</button>
+
+<div *ngFor="let chat of ListOfChats; let i = index" class="paddingFive">
+  <div class="borderOne paddingFive">ID = {{chat.peer.id}}</div>
+  <div class="borderOne paddingFive">
+    <span *ngIf="chat.conn">Connected To :: {{chat.conn.peer}} <button (click)="Disconnect(i)">Disconnect</button></span>
+    <span *ngIf="!chat.conn">Not Connected</span>
+  </div>
+  <div class="borderOne paddingFive">
+    Connect To Someone :: <input type="text" [(ngModel)]="chat.connectTo"> <button (click)="ConnectToNew(i)">Connect</button>
+  </div>
+  <div class="borderOne paddingFive">
+    <ul>
+      <li *ngFor="let chatHis of chat.chatHistory.reverse()">
+        <span *ngIf="chatHis.isSender" style="color: red;">Peer : </span>
+        <span *ngIf="!chatHis.isSender" style="color: green;">Self : </span>
+        {{chatHis.data}} - {{chatHis.dateTime}}</li>
+    </ul>
+  </div>
+  <div class="borderOne paddingFive">
+    <input type="text" [(ngModel)]="chat.currentmessage"> <button (click)="sendMessage(i)">Send</button>
+  </div>
+</div>
