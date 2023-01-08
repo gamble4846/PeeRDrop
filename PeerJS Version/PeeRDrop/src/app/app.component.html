@@ -14,7 +14,7 @@
   </div>
   <div class="borderOne paddingFive">
     <table class="messageTable">
-      <tr *ngFor="let chatHis of chat.chatHistory.reverse()" [ngClass]="chatHis.isSender ? 'backgroundRed' : 'backgroundGreen'">
+      <tr *ngFor="let chatHis of chat.chatHistory" [ngClass]="chatHis.isSender ? 'backgroundRed' : 'backgroundGreen'">
         <ng-container *ngIf="chatHis.data">
           <td>{{chatHis.data.data}}</td>
           <td>{{chatHis.data.sendingTime}}</td>
