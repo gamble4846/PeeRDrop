@@ -3,9 +3,10 @@
 <button (click)="CreateNewChat()">New Chat</button>
 
 <div *ngFor="let chat of ListOfChats; let i = index" class="paddingFive">
+  <div class="borderOne paddingFive">Name = {{chat.name}}</div>
   <div class="borderOne paddingFive">ID = {{chat.peer.id}}</div>
   <div class="borderOne paddingFive">
-    <span *ngIf="chat.conn">Connected To :: {{chat.conn.peer}} <button (click)="Disconnect(i)">Disconnect</button></span>
+    <span *ngIf="chat.conn">Connected To :: {{chat.conn.peer}}</span>
     <span *ngIf="!chat.conn">Not Connected</span>
   </div>
   <div class="borderOne paddingFive">

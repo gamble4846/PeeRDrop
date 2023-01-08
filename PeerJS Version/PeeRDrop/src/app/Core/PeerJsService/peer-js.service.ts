@@ -67,19 +67,18 @@ export class PeerJsService {
     });
 
     chat.peer.on('disconnected', function () {
-      console.log('Connection lost. Please reconnect');
-
-      // Workaround for peer.reconnect deleting previous id
-      chat.peer.id = chat.lastPeerId;
-      chat.peer._lastServerId = chat.lastPeerId;
-      chat.peer.reconnect();
-
-      // chat.OnDisconnected.next(new Date());
+      // if(chat.peer){
+      //   // Workaround for peer.reconnect deleting previous id
+      //   chat.peer.id = chat.lastPeerId;
+      //   chat.peer._lastServerId = chat.lastPeerId;
+      //   chat.peer.reconnect();
+      // }
+      chat.OnDisconnected.next(new Date());
     });
 
     chat.peer.on('close', function() {
       chat.conn = null;
-      chat.OnClose.next(null);
+      chat.OnClose.next(new Date());
     });
 
     chat.peer.on('error', function (err:any) {
@@ -109,16 +108,6 @@ export class PeerJsService {
     chatObject.conn.on('data', function (data:any) {
       chatObject.OnData.next(data);
     });
-
-    return chatObject;
-  }
-
-  Disconnect(chatObject:chatModel){
-    if (chatObject.conn) {
-      chatObject.conn.close();
-    }
-
-    chatObject.connectTo = "";
 
     return chatObject;
   }

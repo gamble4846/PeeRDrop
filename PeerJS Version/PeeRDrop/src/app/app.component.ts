@@ -48,7 +48,15 @@ export class AppComponent {
     })
 
     chatObj.OnDisconnected.subscribe((data:any) => {
-      console.log("Disconnected", data);
+      console.log("Disconnected", data, chatObj);
+    })
+
+    chatObj.OnClose.subscribe((data:any) => {
+      console.log("Closed", data, chatObj);
+    })
+
+    chatObj.OnError.subscribe((data:any) => {
+      console.log("Error", data, chatObj);
     })
   }
 
@@ -63,9 +71,5 @@ export class AppComponent {
 
   ConnectToNew(indexOfChat:number){
     this.ListOfChats[indexOfChat] = this.PeerJs.ConnectToNew(this.ListOfChats[indexOfChat]);
-  }
-
-  Disconnect(indexOfChat:number){
-    this.ListOfChats[indexOfChat] = this.PeerJs.Disconnect(this.ListOfChats[indexOfChat]);
   }
 }
