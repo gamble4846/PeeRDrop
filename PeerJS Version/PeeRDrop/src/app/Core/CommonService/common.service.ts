@@ -18,7 +18,7 @@ export class CommonService {
 
         const writableStream = new WritableStream({          
           start(controller) { },
-          async write(chunk, controller) {
+          write(chunk, controller) {
             fileBuffer.push(chunk);
           },
           close() { },
