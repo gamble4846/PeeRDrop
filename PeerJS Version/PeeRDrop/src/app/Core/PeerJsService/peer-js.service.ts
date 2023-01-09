@@ -28,7 +28,8 @@ export class PeerJsService {
       chatHistory: [],
       currentmessage: "",
       connectTo: "",
-      selectedFile: null
+      selectedFile: null,
+      files: []
     };
 
     return chat;
@@ -111,5 +112,38 @@ export class PeerJsService {
     });
 
     return chatObject;
+  }
+
+  sendFile(file:any, chatObject:chatModel){
+    console.log(file);
+    console.log(chatObject);
+    
+    let countChunk = 0;
+    const writableStream = new WritableStream({          
+      start(controller) { },
+      write(chunk, controller) {
+        debugger
+        let toSend:any = {
+          index: countChunk,
+          data: chunk,
+          fileId: file.fileId,
+          fileStatus: "Pending"
+        }
+
+        chatObject.conn.send(JSON.stringify(toSend));
+      },
+      close() { },
+      abort(reason) { },
+    });
+
+    const stream = file.stream();
+    stream.pipeTo(writableStream).then((data:any) => {
+      chatObject.conn.send(JSON.stringify({
+        fileId: file.fileId,
+        fileStatus: "Completed"
+      }));
+    })
+
+
   }
 }

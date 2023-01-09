@@ -16,8 +16,14 @@
     <table class="messageTable">
       <tr *ngFor="let chatHis of chat.chatHistory" [ngClass]="chatHis.isSender ? 'backgroundRed' : 'backgroundGreen'">
         <ng-container *ngIf="chatHis.data">
-          <td>{{chatHis.data.data}}</td>
-          <td>{{chatHis.data.sendingTime}}</td>
+          <ng-container *ngIf="chatHis.data.type == 'simplemessage'">
+            <td>{{chatHis.data.data}}</td>
+            <td>{{chatHis.data.sendingTime}}</td>
+          </ng-container>
+          <ng-container *ngIf="chatHis.data.type == 'sendFileRequest'">
+            <td>{{chatHis.data.data.fileObject.name}} <button (click)="AcceptFile(chatHis.data.data.fileId, i)">Accept File</button></td>
+            <td>{{chatHis.data.sendingTime}}</td>
+          </ng-container>
         </ng-container>
       </tr>
     </table>
@@ -26,9 +32,6 @@
     <input type="text" [(ngModel)]="chat.currentmessage"> <button (click)="sendMessage(i)">Send</button>
   </div>
   <div class="borderOne paddingFive">
-    <input type="file" (change)="fileSelected($event, i)"> <button (click)="sendFile(i)">Send</button> <span> {{fileStatus}} </span>
-  </div>
-  <div class="borderOne paddingFive">
-    test
+    <input type="file" (change)="fileSelected($event, i)"> <button (click)="sendFileRequest(i)">Send</button> <span> {{fileStatus}} </span>
   </div>
 </div>

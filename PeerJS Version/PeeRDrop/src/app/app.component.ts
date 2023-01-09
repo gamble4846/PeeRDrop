@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonService } from './Core/CommonService/common.service';
-import { chatModel } from './Core/Models/chatModel';
+import { chatModel, fileModel } from './Core/Models/chatModel';
 import { messageModel } from './Core/Models/messageModel';
 import { PeerJsService } from './Core/PeerJsService/peer-js.service';
 
@@ -47,6 +47,13 @@ export class AppComponent {
       let message:messageModel;
       try{
         message = JSON.parse(data);
+        console.log(message);
+        if(data){
+          message = JSON.parse(data);
+          if(message.type == "acceptFileRequest"){
+            this.PeerJs.sendFile(chatObj.files.find((x:any) => x.fileId == message.data.fileId), chatObj);
+          }
+        }
       }
       catch(ex){
         message = {
@@ -61,6 +68,8 @@ export class AppComponent {
         dateTime: new Date(),
         isSender: true,
       });
+
+      chatObj.chatHistory = [...chatObj.chatHistory];
     })
 
     chatObj.OnDisconnected.subscribe((data:any) => {
@@ -96,15 +105,61 @@ export class AppComponent {
     this.ListOfChats[indexOfChat] = this.PeerJs.ConnectToNew(this.ListOfChats[indexOfChat]);
   }
 
-  sendFile(indexOfChat:number){
-    this.fileStatus = "Reading file";
-    this._cs.getchunkedFile(this.ListOfChats[indexOfChat].selectedFile).subscribe((response:any) => {
-      console.log(response);
-      this.fileStatus = "Reading Completed";
+  sendFileRequest(indexOfChat:number){
+    let fileID = "File" + Math.random().toString(16).slice(2) + this.ListOfChats[indexOfChat].peer.id;
+    let fileData = {
+      fileObject: {
+        lastModified : this.ListOfChats[indexOfChat].selectedFile.lastModified,
+        lastModifiedDate : this.ListOfChats[indexOfChat].selectedFile.lastModifiedDate,
+        name : this.ListOfChats[indexOfChat].selectedFile.name,
+        size : this.ListOfChats[indexOfChat].selectedFile.size,
+        type : this.ListOfChats[indexOfChat].selectedFile.type,
+        webkitRelativePath : this.ListOfChats[indexOfChat].selectedFile.webkitRelativePath
+      },
+      fileId: fileID,
+    }
+
+    let fileDataToSave:fileModel = {
+      fileId:fileID,
+      fileObject:this.ListOfChats[indexOfChat].selectedFile
+    }
+
+    this.ListOfChats[indexOfChat].files.push(fileDataToSave);
+
+    let message:messageModel = {
+      type: "sendFileRequest",
+      data: fileData,
+      sendingTime: new Date(),
+    }
+
+    this.PeerJs.sendData(this.ListOfChats[indexOfChat], JSON.stringify(message));
+    
+    this.ListOfChats[indexOfChat].chatHistory.push({
+      data: message,
+      dateTime: new Date(),
+      isSender: false,
     })
+
+    // this.fileStatus = "Reading file";
+    // this._cs.getchunkedFile(this.ListOfChats[indexOfChat].selectedFile).subscribe((response:any) => {
+    //   console.log(response);
+    //   this.fileStatus = "Reading Completed";
+    // })
   }
 
   fileSelected(event:any, indexOfChat:number){
     this.ListOfChats[indexOfChat].selectedFile = event.target.files[0];
+  }
+
+  AcceptFile(fileId:any, indexOfChat:number){
+    let message:messageModel = {
+      type: "acceptFileRequest",
+      data: {
+        fileId: fileId
+      },
+      sendingTime: new Date(),
+    }
+
+    this.PeerJs.sendData(this.ListOfChats[indexOfChat], JSON.stringify(message));
   }
 }

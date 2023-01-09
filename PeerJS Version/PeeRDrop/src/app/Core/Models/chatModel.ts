@@ -18,10 +18,16 @@ export interface chatModel{
     currentmessage: string,
     connectTo: string,
     selectedFile: any,
+    files: Array<fileModel>
 }
 
 export interface chatHistoryModel{
     data:messageModel,
     dateTime:Date,
     isSender: boolean,
+}
+
+export interface fileModel{
+    fileId:string,
+    fileObject:any
 }
