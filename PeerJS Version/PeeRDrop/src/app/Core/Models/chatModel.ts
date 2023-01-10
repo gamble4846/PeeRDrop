@@ -29,5 +29,6 @@ export interface chatHistoryModel{
 
 export interface fileModel{
     fileId:string,
-    fileObject:any
+    fileObject:any,
+    chunks:Array<any>,
 }

@@ -47,11 +47,20 @@ export class AppComponent {
       let message:messageModel;
       try{
         message = JSON.parse(data);
-        console.log(message);
         if(data){
           message = JSON.parse(data);
           if(message.type == "acceptFileRequest"){
             this.PeerJs.sendFile(chatObj.files.find((x:any) => x.fileId == message.data.fileId), chatObj);
+          }
+          else if(message.type == "File Data"){
+            this.HandleFileRecieve(chatObj, message);
+          }
+          else if(message.type == "sendFileRequest"){
+            chatObj.files.push({
+              fileId:message.data.fileId,
+              fileObject:message.data.fileObject,
+              chunks: []
+            })
           }
         }
       }
@@ -121,7 +130,8 @@ export class AppComponent {
 
     let fileDataToSave:fileModel = {
       fileId:fileID,
-      fileObject:this.ListOfChats[indexOfChat].selectedFile
+      fileObject:this.ListOfChats[indexOfChat].selectedFile,
+      chunks: []
     }
 
     this.ListOfChats[indexOfChat].files.push(fileDataToSave);
@@ -161,5 +171,16 @@ export class AppComponent {
     }
 
     this.PeerJs.sendData(this.ListOfChats[indexOfChat], JSON.stringify(message));
+  }
+
+  HandleFileRecieve(chatObj:chatModel, message:any){
+    const CurrentFile:any = chatObj.files.find((x:any) => x.fileId == message.fileId);
+    CurrentFile.chunks.push(message);
+
+    if(CurrentFile.chunks.length >= (CurrentFile.fileObject.size / 64000)){
+      CurrentFile.chunks.sort((a:any,b:any) => (a.index > b.index) ? 1 : ((b.index > a.index) ? -1 : 0));
+      
+      console.log(CurrentFile.chunks);
+    }
   }
 }
