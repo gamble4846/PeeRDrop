@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
+import { saveAs } from 'file-saver';
 
 @Injectable({
   providedIn: 'root'
@@ -51,15 +52,14 @@ export class CommonService {
 
 
   downloadChunkedFile(chatObj:any, CurrentChunk:any, CurrentFile:any){
-    console.log(CurrentFile.finalChunk.length);
-    console.log(Object.values(CurrentChunk));
-    console.log(new Uint8Array(Object.values(CurrentChunk)));
-    CurrentFile.finalChunk = CurrentFile.finalChunk.concat(new Uint8Array(Object.values(CurrentChunk)));
-    console.log(CurrentFile.finalChunk.length);
-    if(CurrentFile.finalChunk.length === 1) {
-      let blob = new Blob([CurrentFile.finalChunk]);
-      let url = URL.createObjectURL(blob);
-      console.log(url);
+    let chunk = new Uint8Array(Object.values(CurrentChunk));
+    CurrentFile.chunks.push(chunk);
+    if(CurrentFile.chunks.length >= (CurrentFile.fileObject.size / 64000)){
+      let buffer = new Uint8Array(CurrentFile.chunks.reduce((acc:any, current:any) => acc.concat(current))).buffer;
+      let blob = new Blob([buffer], { type: 'application/octet-stream' });
+      saveAs(blob, CurrentFile.fileObject.name);
     }
+    console.log(CurrentFile);
+    console.log(CurrentFile.chunks);
   }
 }

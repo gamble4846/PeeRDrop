@@ -159,6 +159,7 @@ export class PeerJsService {
       }
       chatObject.conn.send(JSON.stringify(toSend));
       count++;
+      console.log(count);
     })
   }
 }
