@@ -60,7 +60,8 @@ export class AppComponent {
             chatObj.files.push({
               fileId:message.data.fileId,
               fileObject:message.data.fileObject,
-              chunks: []
+              chunks: [],
+              finalChunk: new Array<Uint8Array>(),
             })
           }
         }
@@ -133,7 +134,8 @@ export class AppComponent {
     let fileDataToSave:fileModel = {
       fileId:fileID,
       fileObject:this.ListOfChats[indexOfChat].selectedFile,
-      chunks: []
+      chunks: [],
+      finalChunk: new Array<Uint8Array>(),
     }
 
     this.ListOfChats[indexOfChat].files.push(fileDataToSave);
@@ -177,15 +179,9 @@ export class AppComponent {
 
   HandleFileRecieve(chatObj:chatModel, message:any){
     const CurrentFile:any = chatObj.files.find((x:any) => x.fileId == message.fileId);
-    console.log(JSON.stringify(message));
-    // CurrentFile.chunks.push(message);
+    console.log(message);
 
-    if(CurrentFile.chunks.length >= (CurrentFile.fileObject.size / 64000)){
-      CurrentFile.chunks.sort((a:any,b:any) => (a.index > b.index) ? 1 : ((b.index > a.index) ? -1 : 0));
-      console.log(CurrentFile.chunks);
-      alert("File Download Completed");
-    }
-
+    this._cs.downloadChunkedFile(chatObj,message.data,CurrentFile);
     // CurrentFile.chunks.concat(new Uint8Array(response.data));
 
     

@@ -152,14 +152,12 @@ export class PeerJsService {
     fileEvents.DataEvent.subscribe((data: any) => {
       let toSend: any = {
         index: count,
-        data: data,
+        data: new Uint8Array(data),
         fileId: file.fileId,
         fileStatus: "Pending",
         type: "File Data",
       }
-      console.log(toSend);
       chatObject.conn.send(JSON.stringify(toSend));
-      console.log(count);
       count++;
     })
   }

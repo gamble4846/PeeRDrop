@@ -1,5 +1,4 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +37,7 @@ export class CommonService {
       var r = new FileReader();
       var blob = _file.slice(_offset, length + _offset);
       r.onload = onLoadHandler;
-      r.readAsDataURL(blob);
+      r.readAsArrayBuffer(blob);
     }
 
     readChunk(offset, options.chunkSize, file)
@@ -47,6 +46,20 @@ export class CommonService {
       "ErrorEvent": ErrorEvent,
       "DataEvent": DataEvent,
       "EndEvent": EndEvent
+    }
+  }
+
+
+  downloadChunkedFile(chatObj:any, CurrentChunk:any, CurrentFile:any){
+    console.log(CurrentFile.finalChunk.length);
+    console.log(Object.values(CurrentChunk));
+    console.log(new Uint8Array(Object.values(CurrentChunk)));
+    CurrentFile.finalChunk = CurrentFile.finalChunk.concat(new Uint8Array(Object.values(CurrentChunk)));
+    console.log(CurrentFile.finalChunk.length);
+    if(CurrentFile.finalChunk.length === 1) {
+      let blob = new Blob([CurrentFile.finalChunk]);
+      let url = URL.createObjectURL(blob);
+      console.log(url);
     }
   }
 }

@@ -31,4 +31,5 @@ export interface fileModel{
     fileId:string,
     fileObject:any,
     chunks:Array<any>,
+    finalChunk:any,
 }
