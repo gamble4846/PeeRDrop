@@ -107,7 +107,7 @@ export class PeerJsService {
 
     // Create connection to destination peer specified in the input field
     chatObject.conn = chatObject.peer.connect(chatObject.connectTo, {
-      reliable: true
+      reliable: false
     });
 
     chatObject.conn.on('data', function (data: any) {
@@ -152,18 +152,15 @@ export class PeerJsService {
     fileEvents.DataEvent.subscribe((data: any) => {
       let toSend: any = {
         index: count,
-        data: new Uint8Array(data),
+        data: data,
         fileId: file.fileId,
         fileStatus: "Pending",
         type: "File Data",
       }
-
-      console.log(JSON.stringify(new Uint8Array(data)));
-
-      // chatObject.conn.send(JSON.stringify(toSend));
-      count++;
-
+      console.log(toSend);
+      chatObject.conn.send(JSON.stringify(toSend));
       console.log(count);
+      count++;
     })
   }
 }

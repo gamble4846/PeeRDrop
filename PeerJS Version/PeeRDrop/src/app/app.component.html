@@ -32,6 +32,6 @@
     <input type="text" [(ngModel)]="chat.currentmessage"> <button (click)="sendMessage(i)">Send</button>
   </div>
   <div class="borderOne paddingFive">
-    <input type="file" (change)="fileSelected($event, i)"> <button (click)="sendFileRequest(i)">Send</button> <span> {{fileStatus}} </span>
+    <input type="file" (change)="fileSelected($event, i)"> <button (click)="sendFileRequest(i)">Send</button>
   </div>
 </div>

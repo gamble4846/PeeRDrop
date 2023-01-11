@@ -38,7 +38,7 @@ export class CommonService {
       var r = new FileReader();
       var blob = _file.slice(_offset, length + _offset);
       r.onload = onLoadHandler;
-      r.readAsArrayBuffer(blob);
+      r.readAsDataURL(blob);
     }
 
     readChunk(offset, options.chunkSize, file)
