@@ -158,6 +158,8 @@ export class PeerJsService {
         type: "File Data",
       }
 
+      console.log(JSON.stringify(toSend));
+
       chatObject.conn.send(JSON.stringify(toSend));
       count++;
     })

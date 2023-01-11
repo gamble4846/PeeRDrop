@@ -175,20 +175,16 @@ export class AppComponent {
 
   HandleFileRecieve(chatObj:chatModel, message:any){
     const CurrentFile:any = chatObj.files.find((x:any) => x.fileId == message.fileId);
-    console.log(message);
+    // console.log(message);
     // CurrentFile.chunks.push(message);
 
     // if(CurrentFile.chunks.length >= (CurrentFile.fileObject.size / 64000)){
     //   CurrentFile.chunks.sort((a:any,b:any) => (a.index > b.index) ? 1 : ((b.index > a.index) ? -1 : 0));
-      
     //   console.log(CurrentFile.chunks);
-
-    //   let length = 0;
-    //   // myArrays.forEach(item => {
-    //   //   length += item.length;
-    //   // });
     // }
 
     // CurrentFile.chunks.concat(new Uint8Array(response.data));
+
+    
   }
 }
