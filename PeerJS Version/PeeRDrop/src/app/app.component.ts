@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonService } from './Core/CommonService/common.service';
 import { chatModel, fileModel } from './Core/Models/chatModel';
 import { messageModel } from './Core/Models/messageModel';
@@ -16,7 +16,8 @@ export class AppComponent {
 
   constructor(
     private PeerJs:PeerJsService,
-    private _cs:CommonService
+    private _cs:CommonService,
+    private ref: ChangeDetectorRef,
   ) { 
 
   }
@@ -47,6 +48,7 @@ export class AppComponent {
       let message:messageModel;
       try{
         message = JSON.parse(data);
+        console.log(message);
         if(data){
           message = JSON.parse(data);
           if(message.type == "acceptFileRequest"){
@@ -79,6 +81,7 @@ export class AppComponent {
       });
 
       chatObj.chatHistory = [...chatObj.chatHistory];
+      this.ref.detectChanges();
     })
 
     chatObj.OnDisconnected.subscribe((data:any) => {
