@@ -60,8 +60,7 @@ export class AppComponent {
             chatObj.files.push({
               fileId:message.data.fileId,
               fileObject:message.data.fileObject,
-              chunks: [],
-              finalChunk: new Array<Uint8Array>(),
+              chunks: "",
             })
           }
         }
@@ -134,8 +133,7 @@ export class AppComponent {
     let fileDataToSave:fileModel = {
       fileId:fileID,
       fileObject:this.ListOfChats[indexOfChat].selectedFile,
-      chunks: [],
-      finalChunk: new Array<Uint8Array>(),
+      chunks: "",
     }
 
     this.ListOfChats[indexOfChat].files.push(fileDataToSave);

@@ -1,0 +1,25 @@
+.borderOne{
+    border: 1px solid black;
+}
+
+.paddingFive{
+    padding: 5px;
+}
+
+.backgroundRed{
+    background-color: rgb(255, 143, 143);
+}
+
+.backgroundGreen{
+    background-color: rgb(186, 255, 186);
+}
+
+.messageTable{
+    border: 1px solid black;
+    margin: 5px;
+}
+
+.messageTable td{
+    border: 1px solid black;
+    padding: 5px;
+}

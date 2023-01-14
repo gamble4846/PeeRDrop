@@ -32,7 +32,8 @@ export class PeerJsService {
       currentmessage: "",
       connectTo: "",
       selectedFile: null,
-      files: []
+      files: [],
+      chatPassword: "",
     };
 
     return chat;
@@ -54,7 +55,7 @@ export class PeerJsService {
       chat.OnOpen.next(id);
     });
 
-    chat.peer.on('connection', function (c: any) {
+    chat.peer.on('connection',  (c: any) => {
       if (chat.conn && chat.conn.open) {
         c.on('open', function () {
           c.send("Already connected to another client");
@@ -66,8 +67,13 @@ export class PeerJsService {
       chat.conn = c;
       chat.OnConnection.next(c);
 
-      chat.conn.on('data', function (data: any) {
-        chat.OnData.next(data);
+      chat.conn.on('data',  (data: any) => {
+        if(chat.chatPassword){
+          chat.OnData.next(this._cs.decryptString(data, chat.chatPassword));
+        }
+        else{
+          chat.OnData.next(data);
+        }
       });
     });
 
@@ -94,8 +100,15 @@ export class PeerJsService {
   }
 
   sendData(chatObject: chatModel, data: any) {
-    if (chatObject.conn) {
-      chatObject.conn.send(data);
+    if(chatObject.chatPassword){
+      if (chatObject.conn) {
+        chatObject.conn.send(this._cs.encryptString(data, chatObject.chatPassword));
+      }
+    }
+    else{
+      if (chatObject.conn) {
+        chatObject.conn.send(data);
+      }
     }
   }
 
@@ -110,8 +123,13 @@ export class PeerJsService {
       reliable: false
     });
 
-    chatObject.conn.on('data', function (data: any) {
-      chatObject.OnData.next(data);
+    chatObject.conn.on('data',  (data: any) => {
+      if(chatObject.chatPassword){
+        chatObject.OnData.next(this._cs.decryptString(data, chatObject.chatPassword));
+      }
+      else{
+        chatObject.OnData.next(data);
+      }
     });
 
     return chatObject;
@@ -128,7 +146,14 @@ export class PeerJsService {
         fileStatus: "Pending",
         type: "File Data",
       }
-      chatObject.conn.send(JSON.stringify(toSend));
+
+      if(chatObject.chatPassword){
+        chatObject.conn.send(this._cs.encryptString(JSON.stringify(toSend), chatObject.chatPassword));
+      }
+      else{
+        chatObject.conn.send(JSON.stringify(toSend));
+      }
+      
       count++;
     })
   }

@@ -18,7 +18,8 @@ export interface chatModel{
     currentmessage: string,
     connectTo: string,
     selectedFile: any,
-    files: Array<fileModel>
+    files: Array<fileModel>,
+    chatPassword: string,
 }
 
 export interface chatHistoryModel{
@@ -31,5 +32,4 @@ export interface fileModel{
     fileId:string,
     fileObject:any,
     chunks:any,
-    finalChunk:any,
 }

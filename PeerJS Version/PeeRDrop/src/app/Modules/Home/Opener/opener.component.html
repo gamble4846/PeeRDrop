@@ -1,0 +1,40 @@
+<div class="borderOne paddingFive">Name = {{CurrentChat.name}}</div>
+<div class="borderOne paddingFive">ID = {{CurrentChat.peer.id}}</div>
+<div class="borderOne paddingFive">
+  <span *ngIf="CurrentChat.conn">Connected To :: {{CurrentChat.conn.peer}}</span>
+  <span *ngIf="!CurrentChat.conn">Not Connected</span>
+</div>
+<div class="borderOne paddingFive">
+  Connect To Someone :: <input type="text" [(ngModel)]="CurrentChat.connectTo"> <button
+    (click)="ConnectToNew()">Connect</button>
+</div>
+<div class="borderOne paddingFive">
+  Chat Password :: <input type="text" [(ngModel)]="CurrentChat.chatPassword">
+</div>
+<div class="borderOne paddingFive">
+  LinkForPeer :: <a [href]="linkForPeer" target="_blank">{{linkForPeer}}</a>
+</div>
+<div class="borderOne paddingFive">
+  <table class="messageTable">
+    <tr *ngFor="let chatHis of CurrentChat.chatHistory"
+      [ngClass]="chatHis.isSender ? 'backgroundRed' : 'backgroundGreen'">
+      <ng-container *ngIf="chatHis.data">
+        <ng-container *ngIf="chatHis.data.type == 'simplemessage'">
+          <td>{{chatHis.data.data}}</td>
+          <td>{{chatHis.data.sendingTime}}</td>
+        </ng-container>
+        <ng-container *ngIf="chatHis.data.type == 'sendFileRequest'">
+          <td>{{chatHis.data.data.fileObject.name}} <button (click)="AcceptFile(chatHis.data.data.fileId)">Accept
+              File</button></td>
+          <td>{{chatHis.data.sendingTime}}</td>
+        </ng-container>
+      </ng-container>
+    </tr>
+  </table>
+</div>
+<div class="borderOne paddingFive">
+  <input type="text" [(ngModel)]="CurrentChat.currentmessage"> <button (click)="sendMessage()">Send</button>
+</div>
+<div class="borderOne paddingFive">
+  <input type="file" (change)="fileSelected($event)"> <button (click)="sendFileRequest()">Send</button>
+</div>
