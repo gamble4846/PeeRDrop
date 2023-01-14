@@ -179,11 +179,7 @@ export class AppComponent {
 
   HandleFileRecieve(chatObj:chatModel, message:any){
     const CurrentFile:any = chatObj.files.find((x:any) => x.fileId == message.fileId);
-    console.log(message);
-
-    this._cs.downloadChunkedFile(chatObj,message.data,CurrentFile);
+    this._cs.downloadChunkedFile(chatObj,message,CurrentFile);
     // CurrentFile.chunks.concat(new Uint8Array(response.data));
-
-    
   }
 }

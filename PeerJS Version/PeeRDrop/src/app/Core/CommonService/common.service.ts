@@ -15,7 +15,7 @@ export class CommonService {
 
     if (options === undefined) options = {}
     if (options.type === undefined) options.type = "Text"
-    if (options.chunkSize === undefined) options.chunkSize = 64000
+    if (options.chunkSize === undefined) options.chunkSize = 128000
 
     var offset = 0, method = 'readAs' + options.type//, dataUrlPreambleLength = "data:;base64,".length
 
@@ -51,15 +51,28 @@ export class CommonService {
   }
 
 
-  downloadChunkedFile(chatObj:any, CurrentChunk:any, CurrentFile:any){
-    let chunk = new Uint8Array(Object.values(CurrentChunk));
-    CurrentFile.chunks.push(chunk);
-    if(CurrentFile.chunks.length >= (CurrentFile.fileObject.size / 64000)){
-      let buffer = new Uint8Array(CurrentFile.chunks.reduce((acc:any, current:any) => acc.concat(current))).buffer;
+  downloadChunkedFile(chatObj:any, Message:any, CurrentFile:any){
+    console.log(Message.index);
+    if((Message.index) == 0){
+      CurrentFile.chunks = "";
+    }
+    let CurrentChunk:any = Message.data;
+    let newString = CurrentFile.chunks + "," + CurrentChunk;    
+    CurrentFile.chunks = newString;
+    
+    // let chunk = new Uint8Array(Object.values(CurrentChunk));
+    // CurrentFile.chunks = new Uint8Array([...CurrentFile.chunks, ...chunk]);
+    console.log("CurrentFile.chunks.length", CurrentFile.chunks.length);
+    console.log("(CurrentFile.fileObject.size / 64000)", (CurrentFile.fileObject.size / 128000));
+    console.log("processed A Chunk")
+
+    if((Message.index + 1) >= (CurrentFile.fileObject.size / 128000)){
+      CurrentFile.chunks =  CurrentFile.chunks.substr(1,  CurrentFile.chunks.length);
+      let finalArray = CurrentFile.chunks.split(",");
+      console.log(finalArray);
+      let buffer = new Uint8Array(finalArray).buffer;
       let blob = new Blob([buffer], { type: 'application/octet-stream' });
       saveAs(blob, CurrentFile.fileObject.name);
     }
-    console.log(CurrentFile);
-    console.log(CurrentFile.chunks);
   }
 }

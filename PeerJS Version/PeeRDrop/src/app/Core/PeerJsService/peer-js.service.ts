@@ -118,48 +118,18 @@ export class PeerJsService {
   }
 
   sendFile(file: any, chatObject: chatModel) {
-    console.log(file);
-    console.log(chatObject);
-
-    // let countChunk = 0;
-    // const writableStream = new WritableStream({          
-    //   start(controller) { },
-    //   write(chunk, controller) {
-    //     debugger
-    //     let toSend:any = {
-    //       index: countChunk,
-    //       data: chunk,
-    //       fileId: file.fileId,
-    //       fileStatus: "Pending"
-    //     }
-
-    //     chatObject.conn.send(JSON.stringify(toSend));
-    //   },
-    //   close() { },
-    //   abort(reason) { },
-    // });
-
-    // const stream = file.stream();
-    // stream.pipeTo(writableStream).then((data:any) => {
-    //   chatObject.conn.send(JSON.stringify({
-    //     fileId: file.fileId,
-    //     fileStatus: "Completed"
-    //   }));
-    // })
-
     let fileEvents = this._cs.getchunkedFile(file.fileObject, undefined);
     let count = 0;
     fileEvents.DataEvent.subscribe((data: any) => {
       let toSend: any = {
         index: count,
-        data: new Uint8Array(data),
+        data: Array.from(new Uint8Array(data)).join(","),
         fileId: file.fileId,
         fileStatus: "Pending",
         type: "File Data",
       }
       chatObject.conn.send(JSON.stringify(toSend));
       count++;
-      console.log(count);
     })
   }
 }

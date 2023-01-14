@@ -30,6 +30,6 @@ export interface chatHistoryModel{
 export interface fileModel{
     fileId:string,
     fileObject:any,
-    chunks:Array<any>,
+    chunks:any,
     finalChunk:any,
 }
