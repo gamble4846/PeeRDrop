@@ -44,6 +44,11 @@
     <button (click)="AudioCallStart(i)">Audio Call</button>
   </div>
   <div>
-    <video width="320" height="240" autoplay id="{{chat.id}}_Video"></video>
+    <span>{{chat.id}}_Video_peer</span>
+    <video width="320" height="240" autoplay id="{{chat.id}}_Video_peer"></video>
+  </div>
+  <div>
+    <span>{{chat.id}}_Video_me</span>
+    <video width="320" height="240" autoplay id="{{chat.id}}_Video_me"></video>
   </div>
 </div>

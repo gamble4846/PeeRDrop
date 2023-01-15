@@ -207,7 +207,7 @@ export class OpenerComponent {
         console.log(call);
         call.on('stream', (remoteStream:any) => {
           console.log("VideoCall", remoteStream);
-          const remoteVideo:any = document.getElementById(currentChat.id + "_Video");
+          const remoteVideo:any = document.getElementById(currentChat.id + "_Video_peer");
           remoteVideo.srcObject = remoteStream;
         });
       }).catch((error) => {
@@ -227,10 +227,12 @@ export class OpenerComponent {
 
       let call = this.CurrentChat.peer.call(this.CurrentChat.conn.peer, localStream);
       call.answer(localStream);
+      const remoteVideo:any = document.getElementById(this.CurrentChat.id + "_Video_me");
+      remoteVideo.srcObject = localStream;
       console.log(call);
       call.on('stream', (remoteStream:any) => {
         console.log("VideoCall", remoteStream);
-        const remoteVideo:any = document.getElementById(this.CurrentChat.id + "_Video");
+        const remoteVideo:any = document.getElementById(this.CurrentChat.id + "_Video_peer");
         remoteVideo.srcObject = remoteStream;
       });
     }).catch((error) => {
