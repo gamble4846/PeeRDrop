@@ -58,6 +58,10 @@ export class OpenerComponent {
     this.CurrentChat.OnData.subscribe((data:any) => {
       this.DataRecieved(data);
     });
+
+    this.CurrentChat.OnCall.subscribe((call: any) => {
+      this.HandeleOncall(call, this.CurrentChat);
+    })
   }
 
   CreateLinkForPeer(){
@@ -190,5 +194,47 @@ export class OpenerComponent {
     }
 
     this.PeerJs.sendData(this.CurrentChat, JSON.stringify(message));
+  }
+
+  HandeleOncall(call:any, currentChat:chatModel){
+    console.log("HandeleOncall", call, currentChat.name);
+    try{
+      navigator.mediaDevices.getUserMedia({
+        video: true, // set to true to get the video stream
+        audio: true // set to true to get the audio stream
+      }).then((localStream) => {
+        call.answer(localStream);
+        console.log(call);
+        call.on('stream', (remoteStream:any) => {
+          console.log("VideoCall", remoteStream);
+          const remoteVideo:any = document.getElementById(currentChat.id + "_Video");
+          remoteVideo.srcObject = remoteStream;
+        });
+      }).catch((error) => {
+        console.log(`Error getting user media: ${error}`);
+      });
+    }
+    catch(ex){
+      console.log(ex);
+    }
+  }
+
+  VideoCall() {
+    navigator.mediaDevices.getUserMedia({
+      video: true, // set to true to get the video stream
+      audio: true // set to true to get the audio stream
+    }).then((localStream) => {
+
+      let call = this.CurrentChat.peer.call(this.CurrentChat.conn.peer, localStream);
+      call.answer(localStream);
+      console.log(call);
+      call.on('stream', (remoteStream:any) => {
+        console.log("VideoCall", remoteStream);
+        const remoteVideo:any = document.getElementById(this.CurrentChat.id + "_Video");
+        remoteVideo.srcObject = remoteStream;
+      });
+    }).catch((error) => {
+      console.log(`Error getting user media: ${error}`);
+    });
   }
 }

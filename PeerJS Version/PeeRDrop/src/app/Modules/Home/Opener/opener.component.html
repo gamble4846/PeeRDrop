@@ -38,3 +38,12 @@
 <div class="borderOne paddingFive">
   <input type="file" (change)="fileSelected($event)"> <button (click)="sendFileRequest()">Send</button>
 </div>
+<div class="borderOne paddingFive">
+  <button (click)="VideoCall()">Video Call</button>
+</div>
+<!-- <div class="borderOne paddingFive">
+  <button (click)="AudioCallStart()">Audio Call</button>
+</div> -->
+<div>
+  <video width="320" height="240" autoplay id="{{CurrentChat.id}}_Video"></video>
+</div>
