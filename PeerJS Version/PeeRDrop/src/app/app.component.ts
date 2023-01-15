@@ -186,7 +186,6 @@ export class AppComponent {
   }
 
   HandeleOncall(call:any, currentChat:chatModel){
-    console.log("HandeleOncall", call, currentChat.name);
     try{
       navigator.mediaDevices.getUserMedia({
         video: true, // set to true to get the video stream
@@ -211,11 +210,11 @@ export class AppComponent {
   VideoCall(indexOfChat: number) {
     navigator.mediaDevices.getUserMedia({
       video: true, // set to true to get the video stream
-      audio: true // set to true to get the audio stream
+      audio: true, // set to true to get the audio stream
     }).then((localStream) => {
 
       let call = this.ListOfChats[indexOfChat].peer.call(this.ListOfChats[indexOfChat].conn.peer, localStream);
-      call.answer(localStream);
+      // call.answer(localStream);
       const remoteVideo:any = document.getElementById(this.ListOfChats[indexOfChat].id + "_Video_me");
       remoteVideo.srcObject = localStream;
       console.log(call);
