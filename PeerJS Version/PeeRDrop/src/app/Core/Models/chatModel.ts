@@ -14,6 +14,7 @@ export interface chatModel{
     OnClose:BehaviorSubject<any>,
     OnError:BehaviorSubject<any>,
     OnData:BehaviorSubject<any>,
+    OnCall:BehaviorSubject<any>,
     chatHistory: Array<chatHistoryModel>,
     currentmessage: string,
     connectTo: string,

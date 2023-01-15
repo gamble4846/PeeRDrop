@@ -3,7 +3,7 @@
 </div>
 
 
-<!-- <button (click)="CreateNewChat()">New Chat</button>
+<button (click)="CreateNewChat()">New Chat</button>
 
 <div *ngFor="let chat of ListOfChats; let i = index" class="paddingFive">
   <div class="borderOne paddingFive">Name = {{chat.name}}</div>
@@ -37,4 +37,13 @@
   <div class="borderOne paddingFive">
     <input type="file" (change)="fileSelected($event, i)"> <button (click)="sendFileRequest(i)">Send</button>
   </div>
-</div> -->
+  <div class="borderOne paddingFive">
+    <button (click)="VideoCall(i)">Video Call</button>
+  </div>
+  <div class="borderOne paddingFive">
+    <button (click)="AudioCallStart(i)">Audio Call</button>
+  </div>
+  <div>
+    <video width="320" height="240" autoplay id="{{chat.id}}_Video"></video>
+  </div>
+</div>

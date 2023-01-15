@@ -28,6 +28,7 @@ export class PeerJsService {
       OnClose: new BehaviorSubject<any>(null),
       OnError: new BehaviorSubject<any>(null),
       OnData: new BehaviorSubject<any>(null),
+      OnCall: new BehaviorSubject<any>(null),
       chatHistory: [],
       currentmessage: "",
       connectTo: "",
@@ -96,6 +97,10 @@ export class PeerJsService {
       chat.OnError.next(err);
     });
 
+    chat.peer.on('call', function (call: any) {
+      chat.OnCall.next(call);
+    });
+
     return chat;
   }
 
@@ -156,5 +161,9 @@ export class PeerJsService {
       
       count++;
     })
+  }
+
+  getCallObject(chatObject: chatModel, localStream:any){
+    return chatObject.peer.call(chatObject.conn.peer, localStream);;
   }
 }
