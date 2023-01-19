@@ -41,7 +41,6 @@ export class PeerJsService {
   }
 
   initializeChat(chat: chatModel) {
-    // Create own peer object with connection to shared PeerJS server
     chat.peer = new Peer(null, {
       debug: 2
     });
