@@ -1,7 +1,81 @@
-<input [(ngModel)]="offerJSON">
-<button (click)="AcceptOffer()">Accept</button>
+<style>
+  button {
+    margin: 0 1em 0 0;
+    width: 5.2em;
+  }
+  div#buttons {
+    margin: 0 0 1.7em 0;
+  }
+  div#send {
+    float: left;
+    margin: 0 3em 1em 0;
+  }
+  div#sendReceive {
+    margin: 0 0 1em 0;
+  }
+  h1 {
+    margin: 0 0 1em 0;
+  }
+  h2 {
+    margin: 0 0 0.5em 0;
+  }
+  textarea {
+    color: #444;
+    font-family: 'Courier New', monospace;
+    font-size: 1em;
+    height: 7.0em;
+    padding: 0.5em;
+  }
+</style>
 
-<br>
+<body>
 
-<input [(ngModel)]="MessageText">
-<button (click)="SendMessage()">Send</button>
+  <div id="container">
+
+   <!--  <div id="highlight">
+      <p>New(ish) article:
+        <a href="https://samdutton.wordpress.com/2018/06/04/a-manifesto-for-teaching-web-development/">A manifesto for teaching web development</a>
+      </p>
+    </div> -->
+
+    <div id="highlight">
+			<p>HTML, CSS and JavaScript feature support across top browsers:
+			  <br><br>
+			  <a href="https://bit.ly/caniuse-stuff">bit.ly/caniuse-stuff</a>
+			</p>
+		</div>
+
+<!--      -->
+
+    <h1><a href="../index.html" title="simpl.info home page">simpl.info</a> RTCDataChannel</h1>
+
+ <!--    <p class="borderBelow">Check out the complete set of WebRTC demos at <a href="https://webrtc.github.io/samples/" title="WebRTC samples GitHub Pages">webrtc.github.io/samples</a>.</p>
+ -->
+    <div id="buttons">
+      <button id="startButton" (click)="createConnection()">Start</button>
+      <button id="sendButton" (click)="sendData()">Send</button>
+      <button id="closeButton" (click)="closeDataChannels()">Stop</button>
+    </div>
+
+    <div id="sendReceive">
+      <div id="send">
+        <h2>Send</h2>
+        <textarea id="dataChannelSend" disabled placeholder="Press Start, enter some text, then press Send."></textarea>
+      </div>
+      <div id="receive">
+        <h2>Receive</h2>
+        <textarea id="dataChannelReceive" disabled></textarea>
+      </div>
+    </div>
+
+    <p>View the console to see logging.</p>
+
+    <p>The <code>RTCPeerConnection</code> objects <code>localConnection</code> and <code>remoteConnection</code> are in global scope, so you can inspect them in the console as well.</p>
+    <p>Code in this example used by kind permission of Vikas Marwaha.</p>
+    <p>For more information about PeerConnection, see <a href="https://www.html5rocks.com/en/tutorials/webrtc/basics/#toc-rtcdatachannel" title="RTCDataChannel section of HTML5 Rocks article about WebRTC">Getting Started With WebRTC</a>.</p>
+
+    <script src="js/main.js"></script>
+
+    <a href="https://github.com/samdutton/simpl/blob/gh-pages/rtcdatachannel" title="View source for this page on GitHub" id="viewSource">View source on GitHub</a>
+
+  </div>
