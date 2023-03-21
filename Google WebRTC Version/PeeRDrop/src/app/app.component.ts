@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonService } from './Services/CommonService/common.service'
 
 @Component({
   selector: 'app-root',
@@ -16,13 +17,14 @@ export class AppComponent {
   peerConnection: RTCPeerConnection = new RTCPeerConnection(this.servers);
   localStream: MediaStream | undefined;
   remoteStream: MediaStream | undefined;
+  dataChannel: RTCDataChannel | undefined;
 
   userOneStreamOBJ: any;
   userTwoStreamOBJ: any;
   offerSdp: any;
   answerSdp: any;
 
-  constructor() { }
+  constructor(public _CS: CommonService) { }
 
   ngOnInit(): void {
     this.GetLocalStream();
@@ -47,12 +49,39 @@ export class AppComponent {
         this.remoteStream!.addTrack(track);
       });
     };
+
+    this.dataChannel = this.peerConnection.createDataChannel("myDataChannel");
+
+    // Set up event listeners
+    this.dataChannel.onopen = () => {
+      console.log("Data channel opened");
+      // Send message
+      this.dataChannel!.send("Hello, world!");
+    };
+
+    this.dataChannel.onerror = (error) => {
+      console.error("Data channel error:", error);
+    };
+
+    this.dataChannel.onmessage = (event) => {
+      console.log("Received message:", event.data);
+    };
+
+    this.peerConnection.ondatachannel = (event) => {
+      const channel = event.channel;
+      channel.onopen = (event) => {
+        channel.send("Hi back!");
+      };
+      channel.onmessage = (event) => {
+        console.log(event.data);
+      };
+    };
   }
 
   async createOffer() {
     this.peerConnection.onicecandidate = async (event: RTCPeerConnectionIceEvent) => {
       if (event.candidate) {
-        this.offerSdp.value = JSON.stringify(this.peerConnection.localDescription)
+        this.offerSdp.value = this._CS.EncryptString(JSON.stringify(this.peerConnection.localDescription));
       }
     };
     const offer = await this.peerConnection.createOffer();
@@ -60,12 +89,14 @@ export class AppComponent {
   }
 
   async createAnswer() {
-    let offer = JSON.parse(this.offerSdp.value)
+    console.log(this._CS.DecryptString(this.offerSdp.value));
+    let offer = JSON.parse(this._CS.DecryptString(this.offerSdp.value));
+    console.log(offer);
     this.peerConnection.onicecandidate = async (event: RTCPeerConnectionIceEvent) => {
       //Event that fires off when a new answer ICE candidate is created
       if (event.candidate) {
         console.log('Adding answer candidate...:', event.candidate)
-        this.answerSdp.value = JSON.stringify(this.peerConnection.localDescription)
+        this.answerSdp.value = this._CS.EncryptString(JSON.stringify(this.peerConnection.localDescription));
       }
     };
     await this.peerConnection.setRemoteDescription(offer);
@@ -75,11 +106,17 @@ export class AppComponent {
 
   async addAnswer() {
     console.log('Add answer triggerd')
-    let answer = JSON.parse(this.answerSdp.value)
+    let answer = JSON.parse(this._CS.DecryptString(this.answerSdp.value))
     console.log('answer:', answer)
     if (!this.peerConnection.currentRemoteDescription) {
       this.peerConnection.setRemoteDescription(answer);
     }
+  }
+
+  sendMessage() {
+    console.log(this.dataChannel);
+    this.dataChannel!.send('Hello, world!');
+    console.log(this.dataChannel!.send('Hello, world!'));
   }
 
 }
