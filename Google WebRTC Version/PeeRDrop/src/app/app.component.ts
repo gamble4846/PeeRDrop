@@ -7,145 +7,73 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
+  peerConnection: RTCPeerConnection = new RTCPeerConnection();
+  localStream: MediaStream | undefined;
+  remoteStream: MediaStream | undefined;
+
+  userOneStreamOBJ: any;
+  userTwoStreamOBJ: any;
+  offerSdp: any;
+  answerSdp: any;
+
   constructor() { }
 
   ngOnInit(): void {
-
+    this.GetLocalStream();
+    this.userOneStreamOBJ = document.getElementById('user-1');
+    this.userTwoStreamOBJ = document.getElementById('user-2');
+    this.offerSdp = document.getElementById('offer-sdp');
+    this.answerSdp = document.getElementById('answer-sdp');
   }
 
-  localConnection: RTCPeerConnection | undefined;
-  remoteConnection: RTCPeerConnection | undefined;
-  sendChannel: any;
-  receiveChannel: any;
-  pcConstraint: any;
-  dataConstraint: any;
+  async GetLocalStream() {
+    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    this.remoteStream = new MediaStream()
+    this.userOneStreamOBJ.srcObject = this.localStream;
+    this.userTwoStreamOBJ.srcObject = this.remoteStream;
 
-  trace(arg: any) {
-    var now = (window.performance.now() / 1000).toFixed(3);
-    console.log(now + ': ', arg);
-  }
+    this.localStream.getTracks().forEach((track: MediaStreamTrack) => {
+      this.peerConnection.addTrack(track, this.localStream!);
+    });
 
-  getOtherPc(pc: any) {
-    return (pc === this.localConnection) ? this.remoteConnection : this.localConnection;
-  }
-
-  getName(pc: any) {
-    return (pc === this.localConnection) ? 'localPeerConnection' :
-      'remotePeerConnection';
-  }
-
-  onAddIceCandidateSuccess() {
-    this.trace('AddIceCandidate success.');
-  }
-
-  onAddIceCandidateError(error: any) {
-    this.trace('Failed to add Ice Candidate: ' + error.toString());
-  }
-
-  onIceCandidate(pc: any, event: any) {
-    this.getOtherPc(pc)!.addIceCandidate(event.candidate)
-      .then(
-        () => { this.onAddIceCandidateSuccess(); },
-        (err: any) => { this.onAddIceCandidateError(err); }
-      );
-    this.trace(this.getName(pc) + ' ICE candidate: \n' + (event.candidate ?
-      event.candidate.candidate : '(null)'));
-  }
-
-  onSendChannelStateChange() {
-    var readyState = this.sendChannel.readyState;
-    this.trace('Send channel state is: ' + readyState);
-  }
-
-  gotDescription1(desc: any) {
-    debugger
-    this.localConnection!.setLocalDescription(desc);
-    this.trace('Offer from localConnection \n' + desc.sdp);
-    this.remoteConnection!.setRemoteDescription(desc);
-    this.remoteConnection!.createAnswer().then(
-      this.gotDescription2,
-      this.onCreateSessionDescriptionError
-    );
-  }
-
-  gotDescription2(desc: any) {
-    this.remoteConnection!.setLocalDescription(desc);
-    this.trace('Answer from remoteConnection \n' + desc.sdp);
-    this.localConnection!.setRemoteDescription(desc);
-  }
-
-  createConnection() {
-    debugger
-    var servers = null;
-    this.pcConstraint = null;
-    this.dataConstraint = null;
-
-    this.trace('Using SCTP based data channels');
-
-    const configuration = { iceServers: [{ urls: 'stun:stun1.l.google.com:19302' }] };
-    this.localConnection = new RTCPeerConnection(configuration);
-    this.trace('Created local peer connection object localConnection');
-
-    this.sendChannel = this.localConnection.createDataChannel('sendDataChannel', this.dataConstraint);
-    this.trace('Created send data channel');
-
-    this.localConnection.onicecandidate = (e: any) => {
-      this.onIceCandidate(this.localConnection, e);
+    this.peerConnection.ontrack = (event) => {
+      event.streams[0].getTracks().forEach((track: MediaStreamTrack) => {
+        this.remoteStream!.addTrack(track);
+      });
     };
-    this.sendChannel.onopen = this.onSendChannelStateChange;
-    this.sendChannel.onclose = this.onSendChannelStateChange;
+  }
 
-    this.remoteConnection = new RTCPeerConnection(configuration);
-    this.trace('Created remote peer connection object remoteConnection');
-
-    this.remoteConnection.onicecandidate = (e: any) => {
-      this.onIceCandidate(this.remoteConnection, e);
+  async createOffer() {
+    this.peerConnection.onicecandidate = async (event: RTCPeerConnectionIceEvent) => {
+      if (event.candidate) {
+        this.offerSdp.value = JSON.stringify(this.peerConnection.localDescription)
+      }
     };
-    this.remoteConnection.ondatachannel = this.receiveChannelCallback;
-
-    this.localConnection.createOffer().then(
-      this.gotDescription1,
-      this.onCreateSessionDescriptionError
-    );
+    const offer = await this.peerConnection.createOffer();
+    await this.peerConnection.setLocalDescription(offer);
   }
 
-  receiveChannelCallback(event: any) {
-    this.trace('Receive Channel Callback');
-    this.receiveChannel = event.channel;
-    this.receiveChannel.onmessage = this.onReceiveMessageCallback;
-    this.receiveChannel.onopen = this.onReceiveChannelStateChange;
-    this.receiveChannel.onclose = this.onReceiveChannelStateChange;
+  async createAnswer() {
+    let offer = JSON.parse(this.offerSdp.value)
+    this.peerConnection.onicecandidate = async (event: RTCPeerConnectionIceEvent) => {
+      //Event that fires off when a new answer ICE candidate is created
+      if (event.candidate) {
+        console.log('Adding answer candidate...:', event.candidate)
+        this.answerSdp.value = JSON.stringify(this.peerConnection.localDescription)
+      }
+    };
+    await this.peerConnection.setRemoteDescription(offer);
+    let answer = await this.peerConnection.createAnswer();
+    await this.peerConnection.setLocalDescription(answer);
   }
 
-  onCreateSessionDescriptionError(error: any) {
-    this.trace('Failed to create session description: ' + error.toString());
-  }
-
-  sendData() {
-    this.sendChannel.send("LOL");
-    this.trace('Sent Data: ' + "lol");
-  }
-
-  closeDataChannels() {
-    this.trace('Closing data channels');
-    this.sendChannel.close();
-    this.trace('Closed data channel with label: ' + this.sendChannel.label);
-    this.receiveChannel.close();
-    this.trace('Closed data channel with label: ' + this.receiveChannel.label);
-    this.localConnection!.close();
-    this.remoteConnection!.close();
-    this.localConnection = undefined;
-    this.remoteConnection = undefined;
-    this.trace('Closed peer connections');
-  }
-
-  onReceiveMessageCallback(event:any) {
-    this.trace('Received Message');
-  }
-
-  onReceiveChannelStateChange() {
-    var readyState = this.receiveChannel.readyState;
-    this.trace('Receive channel state is: ' + readyState);
+  async addAnswer() {
+    console.log('Add answer triggerd')
+    let answer = JSON.parse(this.answerSdp.value)
+    console.log('answer:', answer)
+    if (!this.peerConnection.currentRemoteDescription) {
+      this.peerConnection.setRemoteDescription(answer);
+    }
   }
 
 }
