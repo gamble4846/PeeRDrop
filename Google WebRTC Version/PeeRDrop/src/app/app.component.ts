@@ -6,8 +6,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-
-  peerConnection: RTCPeerConnection = new RTCPeerConnection();
+  servers = {
+    iceServers: [
+      {
+        urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
+      }
+    ]
+  }
+  peerConnection: RTCPeerConnection = new RTCPeerConnection(this.servers);
   localStream: MediaStream | undefined;
   remoteStream: MediaStream | undefined;
 
