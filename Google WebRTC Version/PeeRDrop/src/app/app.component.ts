@@ -35,7 +35,7 @@ export class AppComponent {
   }
 
   async GetLocalStream() {
-    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     this.remoteStream = new MediaStream()
     this.userOneStreamOBJ.srcObject = this.localStream;
     this.userTwoStreamOBJ.srcObject = this.remoteStream;
