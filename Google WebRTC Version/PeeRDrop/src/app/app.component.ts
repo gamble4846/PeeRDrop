@@ -19,8 +19,6 @@ export class AppComponent {
   receiveChannel: any;
   pcConstraint: any;
   dataConstraint: any;
-  dataChannelSend = document.querySelector('textarea#dataChannelSend');
-  dataChannelReceive = document.querySelector('textarea#dataChannelReceive');
 
   trace(arg: any) {
     var now = (window.performance.now() / 1000).toFixed(3);
@@ -60,6 +58,7 @@ export class AppComponent {
   }
 
   gotDescription1(desc: any) {
+    debugger
     this.localConnection!.setLocalDescription(desc);
     this.trace('Offer from localConnection \n' + desc.sdp);
     this.remoteConnection!.setRemoteDescription(desc);
@@ -76,6 +75,7 @@ export class AppComponent {
   }
 
   createConnection() {
+    debugger
     var servers = null;
     this.pcConstraint = null;
     this.dataConstraint = null;
